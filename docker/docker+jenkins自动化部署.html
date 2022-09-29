@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>目的 | 无来</title>
+    <meta name="generator" content="VuePress 1.9.7">
+    <link rel="icon" href="/favicon.ico">
+    <meta name="description" content="喵巨人学习笔记，包含前端开发、后端开发、服务器运维等">
+    
+    <link rel="preload" href="/assets/css/0.styles.9825735b.css" as="style"><link rel="preload" href="/assets/js/app.9b95cb08.js" as="script"><link rel="preload" href="/assets/js/2.dc5a3d57.js" as="script"><link rel="preload" href="/assets/js/9.557cd689.js" as="script"><link rel="prefetch" href="/assets/js/10.50e51332.js"><link rel="prefetch" href="/assets/js/11.2212fd58.js"><link rel="prefetch" href="/assets/js/12.6694002d.js"><link rel="prefetch" href="/assets/js/13.cd891880.js"><link rel="prefetch" href="/assets/js/14.17702a0d.js"><link rel="prefetch" href="/assets/js/3.e1ea490f.js"><link rel="prefetch" href="/assets/js/4.43879640.js"><link rel="prefetch" href="/assets/js/5.60572b82.js"><link rel="prefetch" href="/assets/js/6.22f00265.js"><link rel="prefetch" href="/assets/js/7.2c4bf3fe.js"><link rel="prefetch" href="/assets/js/8.86337e4e.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.9825735b.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><!----> <span class="site-name">无来</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <!----></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><!---->  <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><a href="/docker/" class="sidebar-heading clickable router-link-active open"><span>docker</span> <!----></a> <ul class="sidebar-links sidebar-group-items"><li><a href="/docker/docker+jenkins自动化部署.html" class="active sidebar-link">docker+jenkins自动化部署</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/docker/docker+jenkins自动化部署.html#目的" class="sidebar-link">目的</a></li><li class="sidebar-sub-header"><a href="/docker/docker+jenkins自动化部署.html#准备工作" class="sidebar-link">准备工作</a></li></ul></li><li><a href="/docker/记录一次docker的学习.html" class="sidebar-link">记录一次docker的学习</a></li></ul></section></li><li><section class="sidebar-group depth-0"><a href="/webpack/" class="sidebar-heading clickable"><span>webpack</span> <!----></a> <ul class="sidebar-links sidebar-group-items"><li><a href="/webpack/记录一次代码提交前的拦截操作.html" class="sidebar-link">记录一次代码提交前的拦截操作</a></li></ul></section></li><li><a href="/记录一次SameSite的问题.html" class="sidebar-link">记录一次SameSite的问题</a></li><li><a href="/记录一次nginx反向代理跨域的学习.html" class="sidebar-link">记录一次nginx反向代理跨域的学习</a></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h2 id="目的"><a href="#目的" class="header-anchor">#</a> 目的</h2> <p>本地搭建 <code>docker + jenkins</code> 部署系统, 通过 <code>github</code> 的 <code>webhook</code> 实现代码自动化部署.</p> <h2 id="准备工作"><a href="#准备工作" class="header-anchor">#</a> 准备工作</h2> <h3 id="安装docker"><a href="#安装docker" class="header-anchor">#</a> 安装<code>docker</code></h3> <p>mac: https://docs.docker.com/docker-for-mac/install/<br>
+windows: https://docs.docker.com/docker-for-windows/install/<br>
+liunx:</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>// 推荐脚本安装方式
+curl -fsSL get.docker.com -o get-docker.sh
+sudo sh get-docker.sh --mirror Aliyun
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br></div></div><p>控制台输入 <code>docker -v</code>, 显示版本则安装成功</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>Docker version 20.10.5, build xxxxx
+
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br></div></div><h3 id="安装-jenkins"><a href="#安装-jenkins" class="header-anchor">#</a> 安装 <code>jenkins</code></h3> <p>控制台输入 <code>docker search jenkins</code><br> <img src="evernotecid://0E63FB67-60C5-41B0-A006-313E5AB2A718/appyinxiangcom/26083677/ENResource/p13" alt="a0c208f3ba5adcb1d47e501ff33504f4.png">
+这里我们选择安装<code>jenkinsci/blueocean</code>这个镜像,比较稳定.</p></div> <footer class="page-edit"><!----> <div class="last-updated"><span class="prefix">Last Updated:</span> <span class="time">9/29/2022, 8:47:36 AM</span></div></footer> <div class="page-nav"><p class="inner"><!----> <span class="next"><a href="/docker/记录一次docker的学习.html">
+        记录一次docker的学习
+      </a>
+      →
+    </span></p></div> </main></div><div class="global-ui"></div></div>
+    <script src="/assets/js/app.9b95cb08.js" defer></script><script src="/assets/js/2.dc5a3d57.js" defer></script><script src="/assets/js/9.557cd689.js" defer></script>
+  </body>
+</html>
