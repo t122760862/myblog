@@ -4,14 +4,10 @@ const docsRoot = path.join(__dirname) // docs文件路径
 const chalk = require("chalk") // 命令行打印美化
 const log = console.log
 
-const util = require("util")
-
-console.log(docsRoot, "docsRoot")
-
 function ReadFile(dir = docsRoot, filesList = [], fpath = "") {
 	let files = fs.readdirSync(dir)
 
-	files.forEach((item, index) => {
+	files.forEach((item) => {
 		let filePath = path.join(dir, item)
 		const stat = fs.statSync(filePath)
 
@@ -72,8 +68,6 @@ function ReadFile(dir = docsRoot, filesList = [], fpath = "") {
 			}
 		}
 	})
-
-	console.log(filesList, "filesList")
 
 	return filesList
 }

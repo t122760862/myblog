@@ -8,7 +8,7 @@ const docker = {
 	title: "docker",
 	path: "/docker/",
 	// children: readFile(docRoot + "/docker"),
-	collapsable: false,
+	collapsable: true,
 	children: [
 		["docker/docker+jenkins自动化部署", "docker+jenkins自动化部署"],
 		["docker/记录一次docker的学习", "记录一次docker的学习"]
