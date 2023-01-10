@@ -58,33 +58,102 @@ export default {
 
 简单来说就是将```sotre```复制到另一个```Vue```实例上的```data```中, 当```new Vue```初始化的时候, 会对 ```data``` 中的数据做劫持处理变成响应式数据, 因此```store```中的数据也具备依赖收集分发功能, 当发生变化的时候通知依赖项更新.   
 
-代码实现如下: 在```vuexInit```方法中, 将```store```中的数据复制到另一个```Vue```实例中, 并对实例进行初始化, 对```vuexInit```方法进行补充
+代码实现如下: 在```Store```构造类中, 将```store```中的数据复制到另一个```Vue```实例中, 并对实例进行初始化, 对```class Store```进行补充
 
 ```js
-// my-vuex.js  
-...
-function vuexInit() {
-  /** 若 options 中有 store 对象(root 实例), 则挂载到当前实例 */
-	if(this.options?.store) {
-		this.$store = this.options.store
+// my-vuex.js
+export class Store {
+	constructor(options) {
+		...
+    const store = this
+		const state = store.state
     
-    /** 用 $store_vm 保存新的 Vue 实例, 该属性可以在使用 vuex 的 vue 实例上看到 */
-    this.$store_vm = new Vue({
-      data: {
-        $$state: this.$store
-      }
+    this.init()
+	}
+    
+  init() {
+    // 对 Vue 实例保存, 后面会用到
+    this._vm = new Vue({
+      $$state: this.state
     })
-	}
-	
-	/** 将父组件的 store 挂载到子组件中 */
-	if (this.$parent?.$store) {
-		this.$store = this.$parent?.$store
-	}
+  }
 }
-...
 ```
 
-当时对这一步我很好奇, 不同的两个```Vue```实例可以互相收集依赖吗
+当时对这一步我很好奇, 不同的两个```Vue```实例可以互相收集依赖吗? 后面复习了一遍```vue```响应式原理才恍然大悟:  
+
+* 若```new Vue```时, 若没有传入```el```目标, ```Vue```初始化只会到```created```阶段停止, 此时在```initState```中已完成对```data```的响应式处理,源码如下:  
+
+```js
+export function initMixin(Vue: Class<Component>) {
+  Vue.prototype._init = function (options?: Object) {
+    const vm: Component = this;
+    ...
+    vm._self = vm;
+    initLifecycle(vm);
+    initEvents(vm);
+    initRender(vm);
+    callHook(vm, "beforeCreate");
+    initInjections(vm); // resolve injections before data/props
+    initState(vm);
+    initProvide(vm); // resolve provide after data/props
+    callHook(vm, "created");
+    ...
+    // 传入 el 才会接着执行
+    if (vm.$options.el) {
+      vm.$mount(vm.$options.el);
+    }
+  };
+}
+```
+
+* 在使用```Vuex```的```Vue```实例中会正常初始化, 当页面访问到```store```中的属性时, 由于已经对数据做了响应式处理, 触发依赖收集系统, 将当前```renderWatcher```添加到被访问响应式数据的```Dep```中, 当该数据更新时, 触发```Dep.notify```, 从而更新视图.  
+* 在执行依赖收集时, 会将```Dep.target```赋值为当前依赖目标, 而```Dep.target```是全局的静态变量, 由于两个```Vue```实例都出自于同一个```Vue```, 因此都能访问到这个值, 所以不同的```Vue```实例可以互相收集依赖  
+
+在这一步完成的```Vuex```的数据响应式处理, 此时直接修改```Store```中的属性页面会同步更新
+
+### 如何限制只有 mutation 能修改 Store 中的数据?  
+```Vuex.Store```有一个配置项```strict```,  官方是这样介绍的:  
+> 使 Vuex store 进入严格模式，在严格模式下，任何 mutation 处理函数以外修改 Vuex state 都会抛出错误  
+
+了解发现, 通过一个类似于开关的变量, 若使用```commit```方法则将该值置为标志位, 监听 ```store```中的属性, 当发生变化时判断该变量若不处于标志位, 则抛出错误, 继续完善代码  
+
+```js
+// my-vuex.js
+export class Store {
+	constructor(options) {
+		...
+   
+    this.init()
+	}
+    
+  init() {
+   ...
+   
+   // 如果使用严格模式, 则对 state 数据进行监听, 直接修改抛出异常
+		if (this.strict) {
+			this.enableStrictMode()
+		}
+  }
+  
+  enableStrictMode() {
+    // 通过 Vue 内部 watch 方法对数据监听
+		this._vm.$watch(
+			function () {
+				return this._data.$$state
+			},
+			() => {
+				if (!this._committing) {
+					throw new Error(
+						"[vuex] do not mutate vuex store state outside mutation handlers"
+					)
+				}
+			},
+			{ deep: true, async: true }
+		)
+	}
+}
+```
 
 
 
