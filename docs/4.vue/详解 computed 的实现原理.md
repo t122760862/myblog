@@ -22,7 +22,7 @@
 
 一种是常规的函数写法, 默认使用 `getter`
 
-```
+```js
 computed: {
 
   getName() {
@@ -37,7 +37,7 @@ computed: {
 
 其实还可以使用对象的写法, 设置 `computed` 的 `getter`, 当值被修改的时候同时修改依赖的属性
 
-```
+```js
 computed: {
 
   getName: {
@@ -86,7 +86,7 @@ computed: {
 2.  为每一个计算属性创建`computedWatcher`
 3.  使用`defineComputed`处理定义的每个`computed`
 
-```
+```js
 // src/core/instance/state.js  
 function initComputed(vm: Component, computed: Object) {
   /** 在vm实例上挂载 _computedWatchers 属性存放 computerwatcher */
@@ -129,7 +129,7 @@ function initComputed(vm: Component, computed: Object) {
 1.  使用`Object.defineProperty`将计算属性挂载到 `vue` 实例上, 使其可以通过 `this` 访问
 2.  使用 `createComputedGetter` 包装计算属性的`getter`函数, 当计算属性被访问的时候执行.通过`dirty`变量标记是否去获取最新数据
 
-```
+```js
 // src/core/instance/state.js
 export function defineComputed(
   target: any,
